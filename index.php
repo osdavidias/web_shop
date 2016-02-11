@@ -28,10 +28,16 @@
    <a href="index.php">Početna</a> |
    <a href="onama.php">O nama</a>  |
    <a href="gdjesmo.php">Gdje smo</a> |
+   <?php   
+   session_start();
+    if (!$_SESSION["user"] and !$_SESSION["pass"]) {
+ echo '<a href="profil_kupca.php">Vaš profil</a> | ';
+}
+?>
  </nav>
 
 <?php 
-session_start();
+
 
 include 'connection.php';
 

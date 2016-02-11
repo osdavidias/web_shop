@@ -12,7 +12,20 @@
 
 <body>
 
+<ul style="float:right;list-style-type:none;">
+    <li><a href="registracija.php">Registracija</a></li>
+    <li><a href="login.php">Login</a></li>
+    <br><li><a href="kosarica.php"><b>Košarica</b></a></li>
+  </ul>
+</ul>
 
+
+<h1 align="center">WEB SHOP TRGOVINA</h1>
+   <nav>
+   <a href="index.php">Početna</a> |
+   <a href="onama.php">O nama</a>  |
+   <a href="gdjesmo.php">Gdje smo</a> |
+ </nav>
 
 
 
