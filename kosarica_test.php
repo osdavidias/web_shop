@@ -151,9 +151,11 @@ $ukupno=$c+$ukupno; //ukupan iznos.
 echo '</td>';
   }
   echo '<td>';
-  
+  echo 'Obriši';
   echo '<form method="post" action="kosarica_test.php">';
-  echo '<button type="submit" name="brisi" value="'.$key.'">Obriši</button>';
+
+  echo '<input type="submit" name="brisi" value="'.$key.'">';
+   echo '<input type="hidden" name="brisi_k" value="'.$key.'">';
  
   echo '</form>';
   echo '</td>';
@@ -183,10 +185,12 @@ if (isset($_POST["brisi"])) {
 }
 
 // brisanje proizvoda iz košarice
-if (isset($_POST["brisi"])) {
+if (isset($_POST["brisi"]) AND $_POST["brisi"]!="") {
   $br=$_POST["brisi"];
   unset($_SESSION["kosarica"][$br]);
+  
   header('Location: kosarica_test.php');
+  
 }
 
 
