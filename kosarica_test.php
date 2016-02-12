@@ -37,7 +37,7 @@ include "kategorije_lista.php";
 // izbaci value - dugme:
 array_pop($_POST);
 
-print_r($_POST);
+
  
 
 
@@ -100,10 +100,8 @@ $value["količina"]=$zadnja_v;
        $_POST["količina"]=1;
   
   
-  print_r($_POST);
- echo '<pre>'; 
  array_push($_SESSION["kosarica"], $_POST);
-echo '</pre>';
+
        }
        
   } // kraj else isset id
@@ -127,18 +125,42 @@ if (!isset($_SESSION["kosarica"]))
 
 if (isset($_SESSION["kosarica"])) {
   
+  
 
 echo '<h3 align="center">Proizvodi u košarici:</h3>';
 $rbr=0;
+$ukupno=0;
+echo '<table border="1" style="border-collapse: collapse;">';
+
 foreach ($_SESSION["kosarica"] as $key => $value) {
 $rbr++;
-echo '<b>'.$rbr.'. </b>';
-  foreach ($value as $key => $v) {
-    echo $key.': '.$v.', ';
+echo '<tr>';
+echo '<td>';
+echo $rbr.'.';
+echo '</td>';
+// izračun cijene sstavke:
 
+$c=$value["cijena"];
+$c=str_replace(",", ".", $c); // zamijena zareza točkom zbog računanja
+$c=$c*$value["količina"];
+$ukupno=$c+$ukupno; //ukupan iznos.
+
+  foreach ($value as $k => $v) {
+    echo '<td>';
+    echo $k.': '.$v;
+echo '</td>';
   }
-echo '<br>';
-}
+  echo '<td>';
+  
+  echo '<form method="post" action="kosarica_test.php">';
+  echo '<button type="submit" name="brisi" value="'.$key.'">Obriši</button>';
+ 
+  echo '</form>';
+  echo '</td>';
+echo '</tr>';
+
+} // kraj foreach session["kosarica"]
+echo '<table>';
 
 
 
@@ -146,10 +168,26 @@ echo '<br>';
 }// kraj if is set kosarica
 
 
-echo '<pre>';
-print_r($_SESSION);
-echo '<pre>';
 
+
+echo '<br>';
+$ukupno=str_replace(".", ",", $ukupno);
+echo '<b>UKUPNO: '.$ukupno.' kn</b>';
+
+if (isset($_POST["brisi"])) {
+    
+    for ($i=0; $i <count($_SESSION["kosarica"]) ; $i++) { 
+      
+
+    }
+}
+
+// brisanje proizvoda iz košarice
+if (isset($_POST["brisi"])) {
+  $br=$_POST["brisi"];
+  unset($_SESSION["kosarica"][$br]);
+  header('Location: kosarica_test.php');
+}
 
 
 
