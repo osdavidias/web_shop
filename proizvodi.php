@@ -17,6 +17,7 @@
 <ul style="float:right;list-style-type:none;">
     <li><a href="registracija.php">Registracija</a></li>
     <li><a href="login.php">Login</a></li>
+    
     <br><li><a href="kosarica.php"><b>Košarica</b></a></li>
   </ul>
 </ul>
@@ -134,8 +135,10 @@ echo '</select>';
 
 
 echo '<input type="hidden" name="id" value="'.$rezultat->br_proizvoda.'">';
-echo '<br><br><strong>Cijena: '.$rezultat->cijena.' kn</strong>';
-echo '<input type="hidden" name="cijena" value="'.$rezultat->cijena.' kn">';
+$cijena=$rezultat->cijena;
+$cijena=str_replace(".", ",", $cijena);
+echo '<br><br><strong>Cijena: '.$cijena.' kn</strong>';
+echo '<input type="hidden" name="cijena" value="'.$cijena.' kn">';
 
 // ako ima na skladištu, moguće je dodati u košaricu
 if ($rezultat->na_skladistu =="dostupno") {

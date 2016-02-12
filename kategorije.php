@@ -79,8 +79,9 @@ echo '<div style="float:left; margin-right: 30px; margin-bottom: 30px; border: 1
 echo '<a href="proizvodi.php?id='.$v->br_proizvoda.'"><img width="220px" height="220px" src="slike/'.$v->slika.'" /></a>';
 echo '<div align="center">';
 echo '<h2>'.$v->naziv_proizvoda.'</a></h2>';
-
-echo '<h1>'.$v->cijena.' kn</h1>';
+$cijena=$v->cijena;
+$cijena=str_replace(".", ",", $cijena);
+echo '<h1>'.$cijena.' kn</h1>';
 echo '</div>';
 echo '</div>';
 
@@ -108,7 +109,9 @@ echo '<a href="proizvodi.php?id='.$v->br_proizvoda.'"><img width="220px" height=
 echo '<div align="center">';
 echo '<h2>'.$v->naziv_proizvoda.'</a></h2>';
 
-echo '<h1>'.$v->cijena.' kn</h1>';
+$cijena=$v->cijena;
+$cijena=str_replace(".", ",", $cijena);
+echo '<h1>'.$cijena.' kn</h1>';
 echo '</div>';
 echo '</div>';
 

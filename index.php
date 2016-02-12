@@ -30,9 +30,8 @@
    <a href="gdjesmo.php">Gdje smo</a> |
    <?php   
    session_start();
-    if (!$_SESSION["user"] and !$_SESSION["pass"]) {
+    
  echo '<a href="profil_kupca.php">Vaš profil</a> | ';
-}
 ?>
  </nav>
 
@@ -68,12 +67,15 @@ $rezultat=$stmt->fetchAll(PDO::FETCH_OBJ);
 foreach ($rezultat as $key => $v) 
 {
 
+$cijena=$v->cijena;
+$cijena=str_replace(".", ",", $cijena);
+
 echo '<div style="float:left; margin-right: 30px; margin-bottom: 30px; border: 1px groove #aaaaaa">';
 echo '<a href="proizvodi.php?id='.$v->br_proizvoda.'"><img width="220px" height="220px" src="slike/'.$v->slika.'" /></a>';
 echo '<div align="center">';
 echo '<h2>'.$v->naziv_proizvoda.'</a></h2>';
 
-echo '<h1>'.$v->cijena.' kn</h1>';
+echo '<h1>'.$cijena.' kn</h1>';
 echo '</div>';
 echo '</div>';
 
