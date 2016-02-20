@@ -78,7 +78,7 @@ if (isset($rezultat4->potkategorija)) {
 
   echo ' <b>></b> <a href="kategorije.php?id='.$rezultat->br_kategorije.'&pk='.$rezultat4->br_potkategorije.'">  '.$rezultat4->naziv_potkategorije.'</a>';
 }
-	echo '<form method="post" action="kosarica_test.php">';
+	echo '<form method="post" action="kosarica.php">';
 echo '<h1>'.$rezultat->naziv_proizvoda.'<h1>';
 echo '<input type="hidden" name="naziv" value="'.$rezultat->naziv_proizvoda.'">';
 echo '<table  border="0" width="100%" cellspacing="0" cellpadding="6">';

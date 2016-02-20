@@ -34,10 +34,18 @@
    <a href="index.php">Početna</a> |
    <a href="onama.php">O nama</a>  |
    <a href="gdjesmo.php">Gdje smo</a> |
- </nav>
+  
  <?php
-session_start();
- ?>
+    session_start();
+ if (isset($_SESSION["user"]) AND isset($_SESSION["pass"])) {
+  echo '<a href="profil_kupca.php">Vaš profil</a> |';
+echo '<br><ul style="float:right;list-style-type:none;">
+  <li><a href="logout.php">Logout</a></li>
+   </ul>';
+}
+?>
+ </nav>
+
 <h2>Kontakt:</h2>
 <b>tel: 05642334343
 <br>email: webshop@webshop.hr

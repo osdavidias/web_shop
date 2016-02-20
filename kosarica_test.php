@@ -63,46 +63,45 @@ if (isset($_POST['id']))
 
  else {
     // ako ima proizvoda
-   $postoji=0;
+  
+for ($i=0; $i <count($_SESSION["kosarica"]) ; $i++) { 
+ $value=$_SESSION["kosarica"][$i];
 
-foreach ($_SESSION["kosarica"] as $key => &$value) {
-
-  // korišteno &$value da bi pomoću foreach petlje mogao mijenjati value array i ubaciti staru količinu na kraj
-
-  // skida i čuva postojeće količine, uspoređuje opcije proizvoda:
 $zadnja_v = end($value);
 
   array_pop($value);
+
+
+
+ if ($value === $_POST) {
+    
+   $_SESSION["kosarica"][$i]["količina"]=$zadnja_v; //vraća zadnju količinu
+   $_SESSION["kosarica"][$i]["količina"]+=1;
+
+$p=1; //prozivod postoji u košarici, uvečaj količinu za 1
+
+   }  
+
+
+
+}// kraj for
+
+
+if (!isset($p)) {
+ 
+$a=$_POST;
+  
+  print_r($a);
+$a["količina"]=1;
+
+  array_push($_SESSION["kosarica"], $a); //dodaj novi proizvod u košarici
+
+}
+
  
 
 
-  if ($value===$_POST) {
-
-
-    $value["količina"]=$zadnja_v; //vraća zadnju količinu
-    $value["količina"]+=1; // uvećava za 1
-    $postoji=1;
   
-}
-
-// ako prozivod nije u košarici, vraća se zadnja količina:
-else
-{
-$value["količina"]=$zadnja_v;
-}
-
-} // kraj foreach
-
-
-// dodaj novi proizvod u košaricu:
-    
-    if ($postoji<1) {
-       $_POST["količina"]=1;
-  
-  
- array_push($_SESSION["kosarica"], $_POST);
-
-       }
        
   } // kraj else isset id
  // header("location: kosarica.php"); 
@@ -114,84 +113,14 @@ $value["količina"]=$zadnja_v;
 
 
 
-if (!isset($_SESSION["kosarica"]))
- {
-  
-
-  echo '<br><br><h3 align="center">Košarica je prazna!</h3><br>';
-}
 
 
-
-if (isset($_SESSION["kosarica"])) {
-  
-  
-
-echo '<h3 align="center">Proizvodi u košarici:</h3>';
-$rbr=0;
-$ukupno=0;
-echo '<table border="1" style="border-collapse: collapse;">';
-
-foreach ($_SESSION["kosarica"] as $key => $value) {
-$rbr++;
-echo '<tr>';
-echo '<td>';
-echo $rbr.'.';
-echo '</td>';
-// izračun cijene sstavke:
-
-$c=$value["cijena"];
-$c=str_replace(",", ".", $c); // zamijena zareza točkom zbog računanja
-$c=$c*$value["količina"];
-$ukupno=$c+$ukupno; //ukupan iznos.
-
-  foreach ($value as $k => $v) {
-    echo '<td>';
-    echo $k.': '.$v;
-echo '</td>';
-  }
-  echo '<td>';
-  echo 'Obriši';
-  echo '<form method="post" action="kosarica_test.php">';
-
-  echo '<input type="submit" name="brisi" value="'.$key.'">';
-   echo '<input type="hidden" name="brisi_k" value="'.$key.'">';
- 
-  echo '</form>';
-  echo '</td>';
-echo '</tr>';
-
-} // kraj foreach session["kosarica"]
-echo '<table>';
+echo '<pre>';
+print_r($_SESSION["kosarica"]);
+echo '</pre>';  
 
 
 
-
-}// kraj if is set kosarica
-
-
-
-
-echo '<br>';
-$ukupno=str_replace(".", ",", $ukupno);
-echo '<b>UKUPNO: '.$ukupno.' kn</b>';
-
-if (isset($_POST["brisi"])) {
-    
-    for ($i=0; $i <count($_SESSION["kosarica"]) ; $i++) { 
-      
-
-    }
-}
-
-// brisanje proizvoda iz košarice
-if (isset($_POST["brisi"]) AND $_POST["brisi"]!="") {
-  $br=$_POST["brisi"];
-  unset($_SESSION["kosarica"][$br]);
-  
-  header('Location: kosarica_test.php');
-  
-}
 
 
 

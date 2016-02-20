@@ -13,8 +13,6 @@
 <body>
 
 <ul style="float:right;list-style-type:none;">
-    <li><a href="registracija.php">Registracija</a></li>
-    <li><a href="login.php">Login</a></li>
     <br><li><a href="kosarica.php"><b>Košarica</b></a></li>
   </ul>
 </ul>
@@ -45,8 +43,6 @@ else
 
 echo 
 '<ul style="float:right;list-style-type:none;">
- <li><a href="registracija.php">Registracija</a></li>
-  <li><a href="login.php">Login</a></li>
   <li><a href="logout.php">Logout</a></li>
 
   </ul>';
