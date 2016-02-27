@@ -17,25 +17,28 @@ USE `web_shop`;
 
 -- Dumping structure for table web_shop.detalji_narudzbe
 CREATE TABLE IF NOT EXISTS `detalji_narudzbe` (
-  `sifra_detalja` int(11) NOT NULL AUTO_INCREMENT,
-  `br_narudzbe` int(11) NOT NULL DEFAULT '0',
-  `br_proizvoda` int(11) NOT NULL DEFAULT '0',
+  `br_detalja` int(11) NOT NULL AUTO_INCREMENT,
+  `narudzba` int(11) NOT NULL DEFAULT '0',
+  `proizvod` int(11) NOT NULL DEFAULT '0',
   `kolicina` int(11) NOT NULL DEFAULT '0',
   `jedinicna_cijena` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `detalji` text COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`sifra_detalja`),
-  KEY `br_narudzbe` (`br_narudzbe`,`br_proizvoda`),
-  KEY `FK_detalji_narudzbe_proizvodi` (`br_proizvoda`),
-  CONSTRAINT `FK_detalji_narudzbe_narudzbe` FOREIGN KEY (`br_narudzbe`) REFERENCES `narudzbe` (`br_narudzbe`),
-  CONSTRAINT `FK_detalji_narudzbe_proizvodi` FOREIGN KEY (`br_proizvoda`) REFERENCES `proizvodi` (`br_proizvoda`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `detalji` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`br_detalja`),
+  KEY `narudzba` (`narudzba`),
+  KEY `proizvod` (`proizvod`),
+  CONSTRAINT `FK_detalji_narudzbe_narudzbe` FOREIGN KEY (`narudzba`) REFERENCES `narudzbe` (`br_narudzbe`),
+  CONSTRAINT `FK_detalji_narudzbe_proizvodi` FOREIGN KEY (`proizvod`) REFERENCES `proizvodi` (`br_proizvoda`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
--- Dumping data for table web_shop.detalji_narudzbe: ~3 rows (approximately)
+-- Dumping data for table web_shop.detalji_narudzbe: ~6 rows (approximately)
 /*!40000 ALTER TABLE `detalji_narudzbe` DISABLE KEYS */;
-INSERT INTO `detalji_narudzbe` (`sifra_detalja`, `br_narudzbe`, `br_proizvoda`, `kolicina`, `jedinicna_cijena`, `detalji`) VALUES
-	(1, 5, 1, 1, 24.99, ''),
-	(2, 5, 2, 1, 100.00, ''),
-	(3, 5, 1, 1, 24.99, '');
+INSERT INTO `detalji_narudzbe` (`br_detalja`, `narudzba`, `proizvod`, `kolicina`, `jedinicna_cijena`, `detalji`) VALUES
+	(5, 11, 11, 1, 566.00, 'pozlaćeni'),
+	(6, 11, 2, 2, 100.00, 'M, plava'),
+	(7, 12, 8, 1, 77.00, 'S, žuta'),
+	(8, 12, 5, 1, 220.00, ''),
+	(9, 13, 11, 1, 566.00, 'pozlaćeni'),
+	(10, 14, 11, 1, 566.78, 'pozlaćeni');
 /*!40000 ALTER TABLE `detalji_narudzbe` ENABLE KEYS */;
 
 
@@ -43,14 +46,13 @@ INSERT INTO `detalji_narudzbe` (`sifra_detalja`, `br_narudzbe`, `br_proizvoda`, 
 CREATE TABLE IF NOT EXISTS `dostave` (
   `br_dostave` int(11) NOT NULL AUTO_INCREMENT,
   `naziv_dostave` varchar(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0',
-  `troškovi` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `troskovi` decimal(10,2) NOT NULL DEFAULT '0.00',
   PRIMARY KEY (`br_dostave`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- Dumping data for table web_shop.dostave: ~5 rows (approximately)
 /*!40000 ALTER TABLE `dostave` DISABLE KEYS */;
-INSERT INTO `dostave` (`br_dostave`, `naziv_dostave`, `troškovi`) VALUES
-	(1, 'osobno preuzimanje', 0.00),
+INSERT INTO `dostave` (`br_dostave`, `naziv_dostave`, `troskovi`) VALUES
 	(2, 'Hrvatska pošta', 10.00),
 	(3, 'HP Express', 33.54),
 	(4, 'City EX', 27.66),
@@ -72,6 +74,26 @@ INSERT INTO `kategorije` (`br_kategorije`, `naziv_kategorije`) VALUES
 	(2, 'Ženska odjeća'),
 	(3, 'Ručni satovi');
 /*!40000 ALTER TABLE `kategorije` ENABLE KEYS */;
+
+
+-- Dumping structure for table web_shop.komentari
+CREATE TABLE IF NOT EXISTS `komentari` (
+  `br_komentara` int(11) NOT NULL AUTO_INCREMENT,
+  `kupac` int(11) NOT NULL DEFAULT '0',
+  `proizvod` int(11) NOT NULL DEFAULT '0',
+  `komentar` text COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`br_komentara`),
+  KEY `kupac` (`kupac`),
+  KEY `proizvod` (`proizvod`),
+  CONSTRAINT `FK_komentari_kupci` FOREIGN KEY (`kupac`) REFERENCES `kupci` (`br_kupca`),
+  CONSTRAINT `FK_komentari_proizvodi` FOREIGN KEY (`proizvod`) REFERENCES `proizvodi` (`br_proizvoda`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- Dumping data for table web_shop.komentari: ~0 rows (approximately)
+/*!40000 ALTER TABLE `komentari` DISABLE KEYS */;
+INSERT INTO `komentari` (`br_komentara`, `kupac`, `proizvod`, `komentar`) VALUES
+	(1, 3, 11, 'Odlično!');
+/*!40000 ALTER TABLE `komentari` ENABLE KEYS */;
 
 
 -- Dumping structure for table web_shop.kupci
@@ -104,9 +126,10 @@ INSERT INTO `kupci` (`br_kupca`, `ime`, `prezime`, `adresa`, `postanski_broj`, `
 -- Dumping structure for table web_shop.narudzbe
 CREATE TABLE IF NOT EXISTS `narudzbe` (
   `br_narudzbe` int(11) NOT NULL AUTO_INCREMENT,
-  `kupac` int(11) NOT NULL DEFAULT '0',
-  `dostava` int(11) NOT NULL DEFAULT '0',
-  `ukupan_iznos` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `kupac` int(11) NOT NULL,
+  `dostava` int(11) NOT NULL,
+  `placanje` int(11) NOT NULL,
+  `ukupan_iznos` decimal(10,2) NOT NULL,
   `datum` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `ime` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `prezime` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
@@ -115,16 +138,21 @@ CREATE TABLE IF NOT EXISTS `narudzbe` (
   `post_br` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `telefon` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`br_narudzbe`),
-  KEY `narudzbe` (`kupac`),
+  KEY `kupac` (`kupac`),
   KEY `dostava` (`dostava`),
+  KEY `placanje` (`placanje`),
   CONSTRAINT `FK_narudzbe_dostave` FOREIGN KEY (`dostava`) REFERENCES `dostave` (`br_dostave`),
-  CONSTRAINT `FK_prodano_kupci` FOREIGN KEY (`kupac`) REFERENCES `kupci` (`br_kupca`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  CONSTRAINT `FK_narudzbe_kupci` FOREIGN KEY (`kupac`) REFERENCES `kupci` (`br_kupca`),
+  CONSTRAINT `FK_narudzbe_placanja` FOREIGN KEY (`placanje`) REFERENCES `placanja` (`br_pl`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
--- Dumping data for table web_shop.narudzbe: ~0 rows (approximately)
+-- Dumping data for table web_shop.narudzbe: ~4 rows (approximately)
 /*!40000 ALTER TABLE `narudzbe` DISABLE KEYS */;
-INSERT INTO `narudzbe` (`br_narudzbe`, `kupac`, `dostava`, `ukupan_iznos`, `datum`, `ime`, `prezime`, `adresa`, `mjesto`, `post_br`, `telefon`) VALUES
-	(5, 1, 1, 24.99, '2016-01-29 15:11:04', '', '', '', '', '0', '0');
+INSERT INTO `narudzbe` (`br_narudzbe`, `kupac`, `dostava`, `placanje`, `ukupan_iznos`, `datum`, `ime`, `prezime`, `adresa`, `mjesto`, `post_br`, `telefon`) VALUES
+	(11, 3, 3, 2, 800.32, '2016-02-26 15:37:27', 'bundeva', 'bundeva', 'Bundevina 23', 'Osijek', '44535', '33434'),
+	(12, 3, 2, 2, 308.12, '2016-02-26 18:19:53', 'bundeva', 'bundević', 'Bundevina 23', 'Osijek', '44535', '33434'),
+	(13, 3, 2, 2, 576.78, '2016-02-27 01:30:58', 'bundeva', 'bundević', 'Bundevina 23', 'Osijek', '44535', '33434'),
+	(14, 3, 2, 2, 576.78, '2016-02-27 01:38:15', 'bundeva', 'bundević', 'Bundevina 23', 'Osijek', '44535', '33434');
 /*!40000 ALTER TABLE `narudzbe` ENABLE KEYS */;
 
 
@@ -172,6 +200,22 @@ INSERT INTO `opcijske_grupe` (`br_opc_grupe`, `naziv_opc_grupe`) VALUES
 	(2, 'boje'),
 	(3, 'modeli sata');
 /*!40000 ALTER TABLE `opcijske_grupe` ENABLE KEYS */;
+
+
+-- Dumping structure for table web_shop.placanja
+CREATE TABLE IF NOT EXISTS `placanja` (
+  `br_pl` int(11) NOT NULL AUTO_INCREMENT,
+  `naziv_placanja` varchar(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0',
+  PRIMARY KEY (`br_pl`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- Dumping data for table web_shop.placanja: ~4 rows (approximately)
+/*!40000 ALTER TABLE `placanja` DISABLE KEYS */;
+INSERT INTO `placanja` (`br_pl`, `naziv_placanja`) VALUES
+	(2, 'pouzeće'),
+	(3, 'kreditna kartica'),
+	(4, 'PayPal');
+/*!40000 ALTER TABLE `placanja` ENABLE KEYS */;
 
 
 -- Dumping structure for table web_shop.potkategorije

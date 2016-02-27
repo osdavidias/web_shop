@@ -159,6 +159,61 @@ echo '</form>';
 echo '</tr>';
 echo '</table>';
 
+echo "<h3>Komentari:</h3>";
+
+if (isset($_SESSION["user"]) AND isset($_SESSION["pass"])) {
+
+echo '<form method="post">';
+echo '<textarea rows="4" cols="50 name="komentar" id="kom"></textarea>';
+echo '<br><input type="submit" name="dugme2" value="Dodaj komentar">';
+echo '</form>';
+
+$query5="SELECT * FROM kupci WHERE username=?";
+$stmt5=$pdo->prepare($query5);
+$stmt5->bindParam(1, $_SESSION["user"]);
+$stmt5->execute();
+$r=$stmt5->fetch(PDO::FETCH_OBJ);
+
+if (isset($_POST["dugme2"]) AND !empty($_POST["komentar"])) {
+
+$query6="INSERT INTO komentari (kupac, proizvod, komentar)
+VALUES (?, ?, ?)";
+$stmt6=$pdo->prepare($query6);
+$stmt6->bindParam(1, $r->br_kupca);
+$stmt6->bindParam(2, $_GET["id"]);
+$komentar=nl2br($_POST["komentar"]);// čuva strukturu, nove redove
+$stmt6->bindParam(3, $komentar);
+$stmt6->execute();
+
+print_r($_POST);
+
+}// kraj if isset dugme2
+
+echo '<br>';
+
+
+
+}// kraj if isset user, pass
+
+else {
+
+  echo 'Da biste dodali komentar morate se <a href="login.php">logirati</a>.';
+}
+
+echo '<br>';
+$query7="SELECT komentari.*, kupci.* FROM komentari JOIN kupci ON komentari.kupac=kupci.br_kupca
+WHERE proizvod=?";
+$stmt7=$pdo->prepare($query7);
+$stmt7->bindParam(1, $_GET["id"]);
+$stmt7->execute();
+$r2=$stmt7->fetchAll(PDO::FETCH_OBJ);
+
+foreach ($r2 as $key => $k) {
+   echo '<b>'.$k->username.': </b>';
+   echo $k->komentar;
+   echo '<hr>';
+ } 
+
 } // kraj provjere postojanja proizvoda u bazi
 
 

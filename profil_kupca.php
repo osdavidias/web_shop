@@ -35,7 +35,7 @@ session_start();
 
 
 if (!$_SESSION["user"] and !$_SESSION["pass"]) {
-	header("location:login.php");
+  header("location:login.php");
 }
 
 else
@@ -115,7 +115,7 @@ $stmt->bindParam(2, $_SESSION["user"]);
 $stmt->bindParam(3, $_SESSION["pass"]);
 $nova=md5($nova);
 $stmt->execute();
-unset($pdo);  
+
 
  $_SESSION["pass"]=$nova;
  echo '<div><b>Lozinka uspješno promijenjena!</b></div>';
@@ -127,6 +127,78 @@ else
 }
 
 }// kraj uvjeta za dugme
+
+echo '<h3>Vaše narudžbe:</h3>';
+$query2="SELECT narudzbe.*, dostave.* FROM narudzbe JOIN dostave ON narudzbe.dostava=dostave.br_dostave WHERE kupac=? ORDER BY br_narudzbe DESC";
+$stmt2=$pdo->prepare($query2);
+$stmt2->bindParam(1, $rezultat->br_kupca);
+$stmt2->execute();
+$r2=$stmt2->fetchAll(PDO::FETCH_OBJ);
+
+if ($r2==0 OR $r2=="") {
+  echo "Nema narudžbi!";
+  
+}
+
+else {
+$br=0;
+foreach ($r2 as $key => $v) {
+$br++;
+echo '<b>'.$br.'.)</b><br>';
+echo '<b>Br. narudžbe: </b>'.$v->br_narudzbe.',<b> datum: </b>'.$v->datum;
+
+$rbr=0;
+$query3='SELECT detalji_narudzbe.*, proizvodi.* FROM detalji_narudzbe JOIN proizvodi ON detalji_narudzbe.proizvod=proizvodi.br_proizvoda WHERE narudzba=?';
+$stmt3=$pdo->prepare($query3);
+$stmt3->bindParam(1, $v->br_narudzbe);
+$stmt3->execute();
+$r=$stmt3->fetchAll(PDO::FETCH_OBJ);
+
+echo '<div align="center"><table border="1" style="border-collapse: collapse; width: 90%">'; 
+echo '<tr>';
+echo '<th>';
+echo 'br.';
+echo '</th>';
+echo '<th>Naziv proizvoda:</th>';
+echo '<th>Opis:</th>';
+echo '<th>Količina:</th>';
+echo '<th>Cijena:</th>';
+echo '<th>Ukupno:</th>';
+echo '</tr>';
+foreach ($r as $key => $value) {
+$rbr++;
+$k=$value->kolicina;
+$c=$value->jedinicna_cijena;
+$c=str_replace(".", ",", $c);
+
+echo '<tr>';
+echo '<td align="center">';
+echo $rbr.'.';
+echo '</td>';
+echo '<td align="center">'.$value->naziv_proizvoda.'</td>';
+echo '<td align="center">'.$value->detalji.'</td>';
+echo '<td align="center">'.$value->kolicina.'</td>';
+echo '<td align="center">'.$c.' kn</td>';
+
+$c=str_replace(",", ".", $c);
+$uk=$c*$k;
+$uk=str_replace(".", ",", $uk); 
+echo '<td align="center">'.$uk.' kn</td>';
+echo '</tr>';
+
+}// kraj foreach value
+
+echo '</table></div>';  
+
+$troskovi=str_replace(".", ",", $v->troskovi);
+echo '<br><b>Dostava: </b>'.$v->naziv_dostave.' '.$troskovi.' kn<br>';
+$ukupno=str_replace(".", ",", $v->ukupan_iznos);
+echo '<b>Ukupno: </b>'.$ukupno.' kn';
+echo '<hr>';
+}// kraj foreach v
+
+}
+
 
 }// kraj uvjeta za postavljeni session [user]
 

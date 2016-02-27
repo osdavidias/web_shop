@@ -173,7 +173,7 @@ unset($pdo);
 // email korisniku
 $to = $mail;
 $subject = "Dobrodošli u web shop!";
-$txt = "Doborodošli u naš web shop. Želimo vam ugodnu kupovinu.";
+$txt = "Dobrodošli u naš web shop. Želimo vam ugodnu kupovinu.";
 $from = "From: Web Shop <webshop@webshop.hr>";
 mail($to, $subject, $txt, $from);
 

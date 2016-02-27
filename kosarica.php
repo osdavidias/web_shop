@@ -26,7 +26,7 @@
    <a href="gdjesmo.php">Gdje smo</a> |
     <?php
     session_start();
- if (isset($_SESSION["user"]) AND isset($_SESSION["pass"])) {
+ if (isset($_SESSION["user"]) AND isset($_SESION["pass"])) {
   echo '<a href="profil_kupca.php">Vaš profil</a> |';
   echo 
 '<ul style="float:right;list-style-type:none;">
@@ -125,9 +125,6 @@ $a["količina"]=1;
 } // kraj if is set id
 
 
-
-
-
 if (isset($_SESSION["kosarica"])) {
   
   
@@ -135,8 +132,6 @@ if (isset($_SESSION["kosarica"])) {
 echo '<h3 align="center">Proizvodi u košarici:</h3>';
 $rbr=0;
 $ukupno=0;
-
-
 
 
 foreach ($_SESSION["kosarica"] as $key => $value) {
@@ -149,8 +144,6 @@ echo '</td>';
 // čuvanje količina:
 $z=end($value);
 array_pop($value);
-
-
 
 
   foreach ($value as $k => $v) {
@@ -171,8 +164,6 @@ echo '<input type="number" name="nova" min="1" max="10" value="'.$z.'">';
 echo '<button name="uredi" type="submit" value="'.$key.'">Promijeni</button>';
 
 
-
-
 echo '</form>';
 
 
@@ -187,12 +178,12 @@ echo '<form method="post">';
   echo '</td>';
 echo '</tr>';
 
-echo '<table><br>';
+echo '</table><br>';
 
 // izračun cijene sstavke:
 $c=$value["cijena"];
 $c=str_replace(",", ".", $c); // zamijena zareza točkom zbog računanja
-$c=$c*$z;
+$c=$c*$z; //cijena * količina
 $ukupno=$c+$ukupno; //ukupan iznos.
 
 } // kraj foreach session["kosarica"]
