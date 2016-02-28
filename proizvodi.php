@@ -164,7 +164,7 @@ echo "<h3>Komentari:</h3>";
 if (isset($_SESSION["user"]) AND isset($_SESSION["pass"])) {
 
 echo '<form method="post">';
-echo '<textarea rows="4" cols="50 name="komentar" id="kom"></textarea>';
+echo '<textarea rows="4" cols="50" name="komentar" id="kom"></textarea>';
 echo '<br><input type="submit" name="dugme2" value="Dodaj komentar">';
 echo '</form>';
 
