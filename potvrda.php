@@ -18,7 +18,7 @@ include "connection.php";
 if (isset($_SESSION["user"]) AND isset($_SESSION["pass"]))
  {
 	
-$pdo=new PDO ("mysql:host=$host; dbname=$baza", $user, $pass);
+$pdo = new PDO ("mysql:host=$host; dbname=$baza", $user, $pass, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
 
 $query2="SELECT br_kupca FROM kupci WHERE username=?";
 $stmt2=$pdo->prepare($query2);
@@ -107,7 +107,11 @@ echo '<br><br><br><center><a href="index.php">Povratak na početnu stranicu</a><
 
 // email korisniku s potvrdom narudžbe:
 
-$txt='<br>Poštovani<b> '.$r[0]->k_ime.' '.$r[0]->k_prezime.'</b>, vaša narudžba u ukupnom iznosu od: <b>'.$ukupno.' kn </b> uspješno je zaprimljena.<br>'
+$txt='<html>
+<head>
+  <title>Vaša narudžba:</title>
+</head>';
+$txt.='<body><br>Poštovani<b> '.$r[0]->k_ime.' '.$r[0]->k_prezime.'</b>, vaša narudžba u ukupnom iznosu od: <b>'.$ukupno.' kn </b> uspješno je zaprimljena.<br>'
 .'<b>Broj narudžbe: </b>'.$r[0]->br_narudzbe.'<br><b> Datum: </b>'.$r[0]->datum.'<br>'
 .'<b>Dostava: </b>'.$r[0]->naziv_dostave.', <b> plaćanje: </b>'.$r[0]->naziv_placanja.'<br>'
 .'<b>Adresa dostave: </b><br>'
@@ -151,12 +155,15 @@ $tr=str_replace(".", ",", $r[0]->troskovi);
 $ukupno=str_replace(".", ",", $r[0]->ukupan_iznos);
 $txt.='<b>Troškovi dostave:</b> '.$tr.' kn'
 .'<br><b>Ukupno:</b> '.$ukupno.' kn
-<br><br>HVALA NA POVJERENJU!';
+<br><br>HVALA NA POVJERENJU!</body></html>';
+$headers  = 'MIME-Version: 1.0' . "\r\n";
+$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+
 
 $to = $r[0]->email;
 $subject = "Potvrda narudžbe!";
 $from = "From: Web Shop <webshop@webshop.hr>";
-mail($to, $subject, $txt, $from); // mail
+mail($to, $subject, $txt, $headers); // mail
 
 
 unset($_SESSION["kosarica"]);
