@@ -169,6 +169,10 @@ mail($to, $subject, $txt, $headers); // mail
 unset($_SESSION["kosarica"]);
 unset($_SESSION["ukupno"]);
 
+if (isset($_SESSION["Payment_Amount"])) {
+  unset( "Payment_Amount");
+}
+
 }// kraj if isset user, pass
 
 

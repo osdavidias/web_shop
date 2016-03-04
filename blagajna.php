@@ -17,7 +17,7 @@ include "connection.php";
 
 if (isset($_SESSION["user"]) AND isset($_SESSION["pass"])
 	AND isset($_SESSION["kosarica"]))
- {
+{ 
 	
 
 
@@ -119,9 +119,25 @@ echo '</select>';
 echo '<br><br><input type="submit" name="dugme" value="Potvrdi">';
 echo '</form>';
 
-if (isset($_POST["dugme"])) {
-	
 
+
+if (isset($_POST["dugme"])) {
+
+ // uvećavanje ukupnog iznosa za trošak dostave
+$query4="SELECT * FROM dostave WHERE br_dostave=?";
+$stmt4=$pdo->prepare($query4);
+$stmt4->bindParam(1, $_POST["dostava"]);
+$stmt4->execute();
+$r4=$stmt4->fetch(PDO::FETCH_OBJ);
+
+
+
+// traži oblik plaćanja:
+$query9="SELECT * FROM placanja WHERE br_pl=?";
+$stmt9=$pdo->prepare($query9);
+$stmt9->bindParam(1, $_POST["placanje"]);
+$stmt9->execute();
+$r9=$stmt9->fetch(PDO::FETCH_OBJ);	
 
 $ime=$_POST["ime"];
 $prezime=$_POST["prezime"];
@@ -148,17 +164,14 @@ function nije_prazno()
 if (nije_prazno($ime, $prezime, $adresa, $postanski_broj, $mjesto, $telefon)!== 0)
 {
 
-// uvećavanje ukupnog iznosa za trošak dostave
-$query4="SELECT * FROM dostave WHERE br_dostave=?";
-$stmt4=$pdo->prepare($query4);
-$stmt4->bindParam(1, $_POST["dostava"]);
-$stmt4->execute();
-$r4=$stmt4->fetch(PDO::FETCH_OBJ);
-
-$_SESSION["ukupno"]=str_replace(",", ".", $_SESSION["ukupno"]);
+// uvećavanje ukupnog iznosa:
+ $_SESSION["ukupno"]=str_replace(",", ".", $_SESSION["ukupno"]);
 $dostava=$r4->troskovi;
 
-$_SESSION["ukupno"]+=$dostava;
+$_SESSION["ukupno"]+=$dostava;  
+// ako je plaćanje pouzećem:
+if ($r9->naziv_placanja=="pouzeće") {
+  
 
 
 // unos u tablicu narudzbe
@@ -219,11 +232,28 @@ $detalji=implode(", ", $detalji);
  
 
 
-}
-
+}// kraj foreach value
 
 
 header("Location: potvrda.php");
+
+}// kraj ako je plaćanje pouzećem
+
+// ako je plaćanje PayPal:
+elseif ($r9->naziv_placanja=="PayPal") {
+
+//  Paypal Checkout:
+  echo "<form action='expresscheckout.asp' METHOD='POST'>
+<input type='image' name='submit' src='https://www.paypal.com/en_US/i/btn/btn_xpressCheckout.gif' border='0' align='top' alt='Check out with PayPal'/>
+</form>";
+
+ 
+
+// varijabla Payment amount potrebna za PayPal:
+$_SESSION["Payment_Amount"]=$_SESSION["ukupno"];  
+  
+}// kraj elseif paypal
+
 
 }// kraj nije prazno
 
@@ -234,7 +264,12 @@ else
 
 }
 
+
+
+
+
 }//kraj if isset dugme
+
 
 
 }// kraj if isset user, pass, kosarica
@@ -250,6 +285,7 @@ else {
 
 
 ?>
+
 
 </body>
 
