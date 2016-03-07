@@ -48,7 +48,23 @@ include 'kategorije_lista.php';
 
 
 echo '<h2><div align="center"><font color="red">NOVO U PONUDI:</font></div></h2>';
+?>
 
+<form method="post">
+<b>Sortiraj:</b>
+<select name="sortiraj">
+  <option value="">Odaberi...</option>
+  <option value="1">S višom cijenom</option>
+  <option value="2">S nižom cijenom</option>
+  <option value="3">Prema nazivu A-Z</option>
+  <option value="4">Prema nazivu Z-A</option>
+  <option value="5">Prema datumu, najnoviji</option>
+   <option value="6">Prema datumu, najstariji</option>
+</select>
+<input type="submit" name="button" value="Sortiraj">
+</form>
+
+<?php
 
 
 
@@ -59,7 +75,36 @@ $pdo = new PDO ("mysql:host=$host; dbname=$baza", $user, $pass, array(PDO::MYSQL
 catch (PDOException $e) {
   die ("GREŠKA: Ne mogu se spojiti:".$e->getMessage());
 }
-$query="SELECT * FROM proizvodi ORDER BY vrijeme_dodavanja DESC LIMIT 6";
+
+$p="vrijeme_dodavanja DESC";
+
+// sortiranje po atributima:
+if (isset($_POST["button"])) {
+switch ($_POST["sortiraj"]) {
+  case '1':
+    $p="cijena DESC";
+    break;
+  case '2':
+    $p="cijena ASC";
+    break;
+    case '3':
+     $p="naziv_proizvoda ASC"; 
+      break;
+     case '4':
+      $p="naziv_proizvoda DESC";
+        break; 
+    case '5':
+      $p="vrijeme_dodavanja DESC";
+      break;
+   case '6':
+        $p="vrijeme_dodavanja ASC";
+        break;   
+}
+
+  
+}// kraj if isset button
+
+$query="SELECT * FROM proizvodi ORDER BY ".$p." LIMIT 6";
 $stmt=$pdo->prepare($query);
 $stmt->execute();
 $rezultat=$stmt->fetchAll(PDO::FETCH_OBJ);
@@ -83,6 +128,7 @@ echo '</div>';
  
 
 }
+
 
 unset($pdo);
 

@@ -46,9 +46,35 @@ catch (PDOException $e) {
   die ("GREŠKA: Ne mogu se spojiti:".$e->getMessage());
 }
 
+$p="naziv_proizvoda";
+// sortiranje po atributima:
+if (isset($_POST["button"])) {
+switch ($_POST["sortiraj"]) {
+  case '1':
+    $p="cijena DESC";
+    break;
+  case '2':
+    $p="cijena ASC";
+    break;
+    case '3':
+     $p="naziv_proizvoda ASC"; 
+      break;
+     case '4':
+      $p="naziv_proizvoda DESC";
+        break; 
+    case '5':
+      $p="vrijeme_dodavanja DESC";
+      break;
+   case '6':
+        $p="vrijeme_dodavanja ASC";
+        break;   
+}
+
+}// kraj if isset button
+
 $query="SELECT proizvodi.*, kategorije.* FROM proizvodi
 JOIN kategorije ON kategorije.br_kategorije =proizvodi.kategorija
-WHERE br_kategorije=?";
+WHERE br_kategorije=? ORDER BY ".$p;
 
 $stmt=$pdo->prepare($query);
 $stmt->bindParam(1, $_GET["id"]);
@@ -58,11 +84,35 @@ $rezultat=$stmt->fetchAll(PDO::FETCH_OBJ);
 
 if (isset($_GET["pk"])) {
 	
+$p="naziv_proizvoda";
+// sortiranje po atributima:
+if (isset($_POST["button"])) {
+switch ($_POST["sortiraj"]) {
+  case '1':
+    $p="cijena DESC";
+    break;
+  case '2':
+    $p="cijena ASC";
+    break;
+    case '3':
+     $p="naziv_proizvoda ASC"; 
+      break;
+     case '4':
+      $p="naziv_proizvoda DESC";
+        break; 
+    case '5':
+      $p="vrijeme_dodavanja DESC";
+      break;
+   case '6':
+        $p="vrijeme_dodavanja ASC";
+        break;   
+}
 
+}// kraj if isset button
 $query2="SELECT proizvodi.*, kategorije.*, potkategorije.* FROM proizvodi
 JOIN kategorije ON kategorije.br_kategorije =proizvodi.kategorija JOIN
 potkategorije ON potkategorije.br_potkategorije=proizvodi.potkategorija
- WHERE proizvodi.potkategorija=? ORDER BY naziv_proizvoda ASC";
+ WHERE proizvodi.potkategorija=? ORDER BY ".$p;
 $stmt2=$pdo->prepare($query2);
 $stmt2->bindParam(1, $_GET["pk"]);
 $stmt2->execute();
@@ -71,6 +121,22 @@ $rezultat2=$stmt2->fetchAll(PDO::FETCH_OBJ);
 // naslov potkategorije:
 $array = json_decode(json_encode($rezultat2), true);
 echo '<div align="center"><h1>'.$array["0"]["naziv_potkategorije"].':</h1></div>';
+?>
+<form method="post">
+<b>Sortiraj:</b>
+<select name="sortiraj">
+  <option value="">Odaberi...</option>
+  <option value="1">S višom cijenom</option>
+  <option value="2">S nižom cijenom</option>
+  <option value="3">Prema nazivu A-Z</option>
+  <option value="4">Prema nazivu Z-A</option>
+  <option value="5">Prema datumu, najnoviji</option>
+   <option value="6">Prema datumu, najstariji</option>
+</select>
+<input type="submit" name="button" value="Sortiraj">
+</form>
+
+<?php
 
 foreach ($rezultat2 as $key => $v) 
 {
@@ -85,9 +151,6 @@ echo '<h1>'.$cijena.' kn</h1>';
 echo '</div>';
 echo '</div>';
 
-
- 
-
 }
 
 
@@ -100,6 +163,23 @@ else
 // naslov kategorije:
 $array = json_decode(json_encode($rezultat), true);
 echo '<div align="center"><h1>'.$array["0"]["naziv_kategorije"].':</h1></div>';
+?>
+
+<form method="post">
+<b>Sortiraj:</b>
+<select name="sortiraj">
+  <option value="">Odaberi...</option>
+  <option value="1">S višom cijenom</option>
+  <option value="2">S nižom cijenom</option>
+  <option value="3">Prema nazivu A-Z</option>
+  <option value="4">Prema nazivu Z-A</option>
+  <option value="5">Prema datumu, najnoviji</option>
+   <option value="6">Prema datumu, najstariji</option>
+</select>
+<input type="submit" name="button" value="Sortiraj">
+</form>
+
+<?php
 
 foreach ($rezultat as $key => $v) 
 {
@@ -122,6 +202,8 @@ echo '</div>';
 
 
 }
+
+
 
 unset($pdo);
 
